@@ -1,13 +1,3 @@
-
-╔══════════════════════════════════════╗
-║              Enigma                 ║
-║               v0.1                  ║
-║                                      ║
-║        Developed by: dev-760         ║
-╚══════════════════════════════════════╝
-
----
-
 # Enigma
 
 **Enigma** is a secure peer-to-peer communication system that supports encrypted group messaging, live voice chat, and NAT traversal using STUN/TURN. Built using Python, WebRTC (`aiortc`), and a custom signaling server, Enigma provides a full-mesh encrypted network with no centralized data storage.
