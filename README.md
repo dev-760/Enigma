@@ -1,130 +1,196 @@
-# Enigma Machine
 
-A Python-based simulation of the historic Enigma cipher machine, featuring configurable rotors, plugboard, and seed-based reproducible encryption/decryption. Inspired by the WWII-era Enigma, this project allows you to explore classical rotor-based cryptography and see how a simple seed can generate consistent configurations.
-
-[View on GitHub](https://github.com/dev-760/Enigma-Machine)
-
----
-
-## Features
-
-* **Rotor Configuration**: Three rotors (I, II, III) with standard wiring.
-* **Reflector**: Simplified reflector for bidirectional signal flow.
-* **Seed-Based Initialization**: Uses SHA-256 hashing of a user-provided seed to generate consistent rotor positions and plugboard settings.
-* **Plugboard**: Up to 6 randomized letter-pair swaps per seed.
-* **Rotor Stepping**: Simulates notch turnover: right rotor steps each letter, middle and left step on full rotations.
-* **Encryption & Decryption**: Same process for both—feeding ciphertext back through the machine yields the original message if seed and settings match.
-* **Animated CLI**: Visual rotor stepping animation in the terminal.
-* **Settings Menu**: Configure seed, view current configuration, and reset to defaults.
+╔══════════════════════════════════════╗
+║              Enigma                 ║
+║               v0.1                  ║
+║                                      ║
+║        Developed by: dev-760         ║
+╚══════════════════════════════════════╝
 
 ---
 
-## Technical Specifications
+# Enigma
 
-### Architecture
+**Enigma** is a secure peer-to-peer communication system that supports encrypted group messaging, live voice chat, and NAT traversal using STUN/TURN. Built using Python, WebRTC (`aiortc`), and a custom signaling server, Enigma provides a full-mesh encrypted network with no centralized data storage.
 
-```text
-┌─────────────────┐    ┌──────────────┐    ┌─────────────────┐
-│   Plugboard     │ -> │ Rotor System │ -> │   Reflector     │
-│   (6 pairs)     │    │ (3 rotors)   │    │   (26 wires)    │
-└─────────────────┘    └──────────────┘    └─────────────────┘
+---
+
+## ✨ Features
+
+- ✅ **End-to-End Encryption**
+  - RSA-4096 for key exchange
+  - AES-256-GCM for encrypted messages and files
+
+- 💬 **Group Chat Support**
+  - Full-mesh P2P communication between multiple participants
+  - CLI chat interface with user handles and peer tracking
+
+- 🔊 **Real-Time Voice Chat**
+  - Encrypted live voice communication between users
+  - Optional audio recording and playback functionality
+
+- 🌍 **NAT Traversal with STUN/TURN**
+  - STUN server for NAT punchthrough
+  - TURN server configuration supported
+
+- 🔗 **WebSocket Signaling**
+  - Minimal signaling server to exchange SDP and ICE candidates
+
+- 🛠️ **Command Line Interface**
+  - `/help`, `/voice`, `/record`, `/file`, `/play`, `/quit`, and more
+
+---
+
+## 📦 Project Structure
+
 ```
 
-### Rotor Specifications
+Enigma/
+├── enigma.py           # Main client application
+├── signaling.py        # WebSocket signaling server
+├── README.md           # This file
+├── recordings/         # Audio recordings directory
+├── received\_audio/     # Received audio files
+└── received\_files/     # General received files
 
-| Component | Configuration              | Specification    |
-| --------- | -------------------------- | ---------------- |
-| Rotor I   | EKMFLGDQVZNTOWYHXUSPAIBRCJ | Right-most rotor |
-| Rotor II  | AJDKSIRUXBLHWTMCQGZNPYFVOE | Middle rotor     |
-| Rotor III | BDFHJLCPRTXVZNYEIWGAKMUSQO | Left-most rotor  |
-| Reflector | YRUHQSLDPXNGOKMIEBFZCWVJAT | Type B Reflector |
-
-### Cryptographic Parameters
-
-* **Key Space**: 26³ rotor positions × 2⁶ plugboard configurations
-* **Stepping Mechanism**: Odometer-style advancement with double-stepping
-* **Character Set**: A–Z (26 letters), preserves non-alphabetic characters
-* **Reciprocal Property**: Encryption and decryption use identical operations
+````
 
 ---
 
-## Getting Started
+## 🚀 Getting Started
 
-### Prerequisites
-
-* Python 3.7 or higher
-
-### Installation
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/dev-760/Enigma-Machine.git
-   cd Enigma-Machine
-   ```
-
-2. (Optional) Create and activate a virtual environment:
-
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate   # On Windows: venv\\Scripts\\activate
-   ```
-
-3. Install dependencies (none beyond the stdlib):
-
-   ```bash
-   pip install -r requirements.txt  # currently empty
-   ```
-
-## Usage
-
-Run the main script:
+### 1. Clone the Repository
 
 ```bash
-python enigma_machine.py
+git clone https://github.com/dev-760/Enigma.git
+cd Enigma
+````
+
+### 2. Install Requirements
+
+Install all required dependencies:
+
+```bash
+pip install -r requirements.txt
 ```
 
-### Menu Options
+Or manually:
 
-1. **Encrypt**: Encrypt a plaintext message. Requires a seed to be set.
-2. **Decrypt**: Decrypt a ciphertext message. Uses the same process as encryption.
-3. **Settings**:
-
-   * **Enter Seed**: Input a secret seed (text) shared by sender and receiver.
-   * **View Current Configuration**: Display seed, rotor positions, and plugboard mappings.
-   * **Reset to Default**: Clear seed and reset machine.
-4. **Exit**: Quit the program.
-
-### Example
-
-```text
-=== ENIGMA MACHINE V0.1 ===
-Current Seed: SECRET123
-Rotor Positions: K Q M
-Plugboard: 6 pairs configured
-
-1. Encrypt
-2. Decrypt
-3. Settings
-4. Exit
+```bash
+pip install cryptography pyaudio aiohttp aiortc
 ```
 
-## How It Works
+> You may need to install PortAudio on your system to use `pyaudio`. On Ubuntu:
+> `sudo apt install portaudio19-dev`
 
-1. **Seed Hashing**: The input seed is hashed via SHA-256 to produce a 32-bit integer.
-2. **Rotor & Plugboard Setup**: Using the seeded random generator, three rotor positions (A–Z) and six plugboard pairs are chosen.
-3. **Encoding**:
+---
 
-   * Advance rotors according to stepping rules.
-   * Apply plugboard swap.
-   * Pass signal through Rotors III → II → I.
-   * Reflect using reflector wiring.
-   * Pass signal back through Rotors I → II → III in reverse.
-   * Apply plugboard again.
-4. **Repeat** for each character; only alphabetic characters are transformed.
+## 🧪 Running the System
 
+### 1. Start the Signaling Server
 
-## Acknowledgments
+```bash
+python signaling.py
+```
 
-* Inspired by the historic Enigma machine.
-* Uses Python's standard library and `hashlib` for stable seeding.
+By default, it runs on `ws://localhost:8765`.
+
+### 2. Start the Enigma Client
+
+In another terminal window:
+
+```bash
+python enigma.py
+```
+
+You'll be prompted to:
+
+* Create a room (host)
+* Join a room (connect)
+* Set your display name
+* Use voice & audio tools
+* View your public key fingerprint
+
+---
+
+## 💬 Chat Commands (In-Session)
+
+Use the following commands after joining a room:
+
+| Command   | Description                          |
+| --------- | ------------------------------------ |
+| `/voice`  | Start/stop real-time encrypted voice |
+| `/record` | Begin recording your microphone      |
+| `/stop`   | Stop current recording               |
+| `/play`   | Play a `.wav` file                   |
+| `/send`   | Send an audio file                   |
+| `/file`   | Send any general file                |
+| `/peers`  | List currently connected users       |
+| `/clear`  | Clear the screen                     |
+| `/help`   | Display all available commands       |
+| `/quit`   | Exit chat and return to main menu    |
+
+---
+
+## 🧱 Configuration
+
+You can customize certain system behaviors:
+
+### Modify STUN/TURN Servers
+
+Edit the ICE server list in `enigma.py`:
+
+```python
+self.pc = RTCPeerConnection(iceServers=[
+    RTCIceServer(urls=["stun:stun.l.google.com:19302"]),
+    RTCIceServer(
+        urls=["turn:turn.example.com:3478"],
+        username="user",
+        credential="pass"
+    )
+])
+```
+
+### Change Signaling Server
+
+Update the signaling server URL in the `P2PNode` constructor:
+
+```python
+node = P2PNode(signaling_url="ws://your-host.com:8765/ws")
+```
+
+---
+
+## 📸 Screenshots
+
+```
+╔══════════════════════════════════════╗
+║              Enigma                 ║
+║               v0.1                  ║
+║                                      ║
+║        Developed by: dev-760         ║
+╚══════════════════════════════════════╝
+
+1) Start New Room
+2) Join Room
+3) Set Username
+4) Audio Tools
+5) View Key Fingerprint
+6) Help
+7) Exit
+
+>> Connected to Room ID: 3f8a91
+>> Peer connected: Alice
+>> /voice to start speaking
+```
+
+---
+
+## 🙏 Credits
+
+* Designed & Developed by **dev-760**
+* Enigma v0.1
+* Built with Python, WebRTC (aiortc), and AES/RSA crypto
+
+```
+
+Let me know if you'd like me to generate a `requirements.txt`, add deployment instructions, or make a versioned badge f
