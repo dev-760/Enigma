@@ -1,0 +1,18 @@
+# WebRTC and Media
+aiortc==1.5.0
+aioice==0.7.6
+av==10.0.0
+pyaudio==0.2.13
+
+# Networking
+aiohttp==3.9.5
+websockets==12.0
+
+# Cryptography
+cryptography==42.0.5
+
+# Optional: For better audio handling and compatibility
+numpy==1.26.4
+
+# Optional: For compatibility on some systems (e.g., when using ffmpeg via av)
+cffi==1.16.0
